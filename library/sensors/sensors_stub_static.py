@@ -30,6 +30,7 @@ TEMPERATURE_SENSOR_VALUE = 67.3
 
 # Define other sensors
 CPU_FREQ_MHZ = 2400.0
+CPU_VOLT = 1.17
 DISK_TOTAL_SIZE_GB = 1000
 MEMORY_TOTAL_SIZE_GB = 64
 GPU_MEM_TOTAL_SIZE_GB = 32
@@ -45,6 +46,10 @@ class Cpu(sensors.Cpu):
     @staticmethod
     def frequency() -> float:
         return CPU_FREQ_MHZ
+    
+    @staticmethod
+    def voltage() -> float:
+        return CPU_VOLT
 
     @staticmethod
     def load() -> Tuple[float, float, float]:  # 1 / 5 / 15min avg (%):

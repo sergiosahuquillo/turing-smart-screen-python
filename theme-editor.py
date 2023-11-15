@@ -103,6 +103,7 @@ def refresh_theme():
     import library.stats as stats
     stats.CPU.percentage()
     stats.CPU.frequency()
+    stats.CPU.voltage()
     stats.CPU.load()
     stats.CPU.temperature()
     stats.Gpu.stats()

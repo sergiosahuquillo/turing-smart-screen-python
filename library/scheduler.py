@@ -94,6 +94,14 @@ def CPUFrequency():
     stats.CPU.frequency()
 
 
+@async_job("CPU_Voltage")
+@schedule(timedelta(seconds=config.THEME_DATA['STATS']['CPU']['VOLTAGE'].get("INTERVAL", None)).total_seconds())
+def CPUVoltage():
+    """ Refresh the CPU Voltage """
+    # logger.debug("Refresh CPU Voltage")
+    stats.CPU.voltage()
+
+
 @async_job("CPU_Load")
 @schedule(timedelta(seconds=config.THEME_DATA['STATS']['CPU']['LOAD'].get("INTERVAL", None)).total_seconds())
 def CPULoad():

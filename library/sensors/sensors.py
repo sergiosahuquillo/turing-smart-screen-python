@@ -36,6 +36,11 @@ class Cpu(ABC):
 
     @staticmethod
     @abstractmethod
+    def voltage() -> float:
+        pass
+
+    @staticmethod
+    @abstractmethod
     def load() -> Tuple[float, float, float]:  # 1 / 5 / 15min avg (%)
         pass
 

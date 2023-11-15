@@ -192,6 +192,15 @@ class CPU:
             unit=" GHz",
             min_size=4
         )
+    
+    @staticmethod
+    def voltage():
+        display_themed_value(
+            theme_data=config.THEME_DATA['STATS']['CPU']['VOLTAGE']['TEXT'],
+            value=f'{sensors.Cpu.voltage():.2f}',
+            unit=" V",
+            min_size=4
+        )
 
     @staticmethod
     def load():

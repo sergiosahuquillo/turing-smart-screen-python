@@ -196,6 +196,7 @@ if __name__ == "__main__":
 
     scheduler.CPUPercentage()
     scheduler.CPUFrequency()
+    scheduler.CPUVoltage()
     scheduler.CPULoad()
     if stats.CPU.is_temperature_available():
         scheduler.CPUTemperature()

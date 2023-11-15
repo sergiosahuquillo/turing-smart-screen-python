@@ -198,6 +198,24 @@ class Cpu(sensors.Cpu):
         else:
             # Frequencies reading is not supported on this CPU
             return math.nan
+    
+    @staticmethod
+    def voltage() -> float:
+        voltage = []
+        cpu = get_hw_and_update(Hardware.HardwareType.Cpu)
+        for sensor in cpu.Sensors:
+            if sensor.SensorType == Hardware.SensorType.Voltage:
+                # Keep only real core clocks, ignore effective core clocks
+                if "Core #" in str(sensor.Name) and "Effective" not in str(sensor.Name):
+                    if sensor.Value:
+                        voltage.append(float(sensor.Value))
+
+        if voltage:
+            # Take mean of all core clock as "CPU clock" (as it is done in Windows Task Manager Performance tab)
+            return mean(voltage)
+        else:
+            # Voltage reading is not supported on this CPU
+            return math.nan
 
     @staticmethod
     def load() -> Tuple[float, float, float]:  # 1 / 5 / 15min avg (%):

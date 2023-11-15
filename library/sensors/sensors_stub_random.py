@@ -33,6 +33,10 @@ class Cpu(sensors.Cpu):
     @staticmethod
     def frequency() -> float:
         return random.uniform(800, 3400)
+    
+    @staticmethod
+    def voltage() -> float:
+        return random.uniform(800, 3400)
 
     @staticmethod
     def load() -> Tuple[float, float, float]:  # 1 / 5 / 15min avg (%):

@@ -14,6 +14,10 @@ STATS:
       INTERVAL: 5
       TEXT:
         SHOW: False
+    VOLTAGE:
+      INTERVAL: 5
+      TEXT:
+        SHOW: False
     LOAD:
       INTERVAL: 5
       ONE:
