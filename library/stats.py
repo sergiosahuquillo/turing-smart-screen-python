@@ -231,8 +231,8 @@ class CPU:
     def temperature():
         display_themed_value(
             theme_data=config.THEME_DATA['STATS']['CPU']['TEMPERATURE']['TEXT'],
-            value=int(sensors.Cpu.temperature()) if int(sensors.Cpu.temperature()) <= 99 else 99,
-            min_size=2,
+            value=int(sensors.Cpu.temperature()),
+            min_size=3,
             unit="°C"
         )
 
