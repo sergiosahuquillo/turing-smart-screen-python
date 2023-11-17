@@ -320,6 +320,57 @@ class LcdComm(ABC):
             draw.rectangle([0, 0, width - 1, height - 1], fill=None, outline=bar_color)
 
         self.DisplayPILImage(bar_image, x, y)
+    
+    def DisplayProgressBarFloat(self, x: int, y: int, width: int, height: int, min_value: float = 0.00, max_value: float = 9.99,
+                           value: float = 5.55,
+                           bar_color: Tuple[int, int, int] = (0, 0, 0),
+                           bar_outline: bool = True,
+                           background_color: Tuple[int, int, int] = (255, 255, 255),
+                           background_image: str = None):
+        # Generate a progress bar and display it
+        # Provide the background image path to display progress bar with transparent background
+
+        if isinstance(bar_color, str):
+            bar_color = tuple(map(int, bar_color.split(', ')))
+
+        if isinstance(background_color, str):
+            background_color = tuple(map(int, background_color.split(', ')))
+
+        assert x <= self.get_width(), 'Progress bar X coordinate must be <= display width'
+        assert y <= self.get_height(), 'Progress bar Y coordinate must be <= display height'
+        assert x + width <= self.get_width(), 'Progress bar width exceeds display width'
+        assert y + height <= self.get_height(), 'Progress bar height exceeds display height'
+
+        # Don't let the set value exceed our min or max value, this is bad :)
+        if value < min_value:
+            value = min_value
+        elif max_value < value:
+            value = max_value
+
+        assert min_value <= value <= max_value, 'Progress bar value shall be between min and max'
+
+        if background_image is None:
+            # A bitmap is created with solid background
+            bar_image = Image.new('RGB', (width, height), background_color)
+        else:
+            # A bitmap is created from provided background image
+            bar_image = self.open_image(background_image)
+
+            # Crop bitmap to keep only the progress bar background
+            bar_image = bar_image.crop(box=(x, y, x + width, y + height))
+
+        # Draw progress bar
+        bar_filled_width = (value / (max_value - min_value) * width) - 1
+        if bar_filled_width < 0:
+            bar_filled_width = 0
+        draw = ImageDraw.Draw(bar_image)
+        draw.rectangle([0, 0, bar_filled_width, height - 1], fill=bar_color, outline=bar_color)
+
+        if bar_outline:
+            # Draw outline
+            draw.rectangle([0, 0, width - 1, height - 1], fill=None, outline=bar_color)
+
+        self.DisplayPILImage(bar_image, x, y)
 
     def DisplayRadialProgressBar(self, xc: int, yc: int, radius: int, bar_width: int,
                                  min_value: int = 0,

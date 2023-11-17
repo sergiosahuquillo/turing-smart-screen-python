@@ -119,6 +119,24 @@ def display_themed_progress_bar(theme_data, value):
         background_image=get_theme_file_path(theme_data.get("BACKGROUND_IMAGE", None))
     )
 
+def display_themed_progress_bar_float(theme_data, value):
+    if not theme_data.get("SHOW", False):
+        return
+
+    display.lcd.DisplayProgressBarFloat(
+        x=theme_data.get("X", 0),
+        y=theme_data.get("Y", 0),
+        width=theme_data.get("WIDTH", 0),
+        height=theme_data.get("HEIGHT", 0),
+        value=value,
+        min_value=theme_data.get("MIN_VALUE", 0.0),
+        max_value=theme_data.get("MAX_VALUE", 9.99),
+        bar_color=theme_data.get("BAR_COLOR", (0, 0, 0)),
+        bar_outline=theme_data.get("BAR_OUTLINE", False),
+        background_color=theme_data.get("BACKGROUND_COLOR", (255, 255, 255)),
+        background_image=get_theme_file_path(theme_data.get("BACKGROUND_IMAGE", None))
+    )
+
 
 def display_themed_radial_bar(theme_data, value, min_size=0, unit='', custom_text=None):
     if not theme_data.get("SHOW", False):
