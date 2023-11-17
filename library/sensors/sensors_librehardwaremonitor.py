@@ -263,7 +263,7 @@ class Gpu(sensors.Gpu):
     prev_fps = 0
 
     @classmethod
-    def stats(cls) -> Tuple[float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C)
+    def stats(cls) -> Tuple[float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%)
         gpu_to_use = get_hw_and_update(Hardware.HardwareType.GpuAmd, cls.gpu_name)
         if gpu_to_use is None:
             gpu_to_use = get_hw_and_update(Hardware.HardwareType.GpuNvidia, cls.gpu_name)
@@ -271,12 +271,13 @@ class Gpu(sensors.Gpu):
             gpu_to_use = get_hw_and_update(Hardware.HardwareType.GpuIntel, cls.gpu_name)
         if gpu_to_use is None:
             # GPU not supported
-            return math.nan, math.nan, math.nan, math.nan
+            return math.nan, math.nan, math.nan, math.nan, math.nan
 
         load = math.nan
         used_mem = math.nan
         total_mem = math.nan
         temp = math.nan
+        fan = []
 
         for sensor in gpu_to_use.Sensors:
             if sensor.SensorType == Hardware.SensorType.Load and str(sensor.Name).startswith("GPU Core"):
@@ -292,8 +293,14 @@ class Gpu(sensors.Gpu):
                 total_mem = float(sensor.Value)
             elif sensor.SensorType == Hardware.SensorType.Temperature and str(sensor.Name).startswith("GPU Core"):
                 temp = float(sensor.Value)
+            elif sensor.SensorType == Hardware.SensorType.Control and str(sensor.Name).startswith("GPU Fan 1"):
+                fan.append(float(sensor.Value))
+            elif sensor.SensorType == Hardware.SensorType.Control and str(sensor.Name).startswith("GPU Fan 2"):
+                fan.append(float(sensor.Value))
+            elif sensor.SensorType == Hardware.SensorType.Control and str(sensor.Name).startswith("GPU Fan 3"):
+                fan.append(float(sensor.Value))
 
-        return load, (used_mem / total_mem * 100.0), used_mem, temp
+        return load, (used_mem / total_mem * 100.0), used_mem, temp, mean(fan)
 
     @classmethod
     def fps(cls) -> int:

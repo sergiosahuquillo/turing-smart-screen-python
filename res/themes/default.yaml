@@ -58,6 +58,13 @@ STATS:
       TEXT:
         SHOW: False
         SHOW_UNIT: False
+    FAN:
+      GRAPH:
+        SHOW: False
+      RADIAL:
+        SHOW: False
+      TEXT:
+        SHOW: False
   MEMORY:
     INTERVAL: 5
     SWAP:

@@ -138,7 +138,7 @@ class Gpu(sensors.Gpu):
 
 class GpuNvidia(sensors.Gpu):
     @staticmethod
-    def stats() -> Tuple[float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C)
+    def stats() -> Tuple[float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%)
         # Unlike other sensors, Nvidia GPU with GPUtil pulls in all the stats at once
         nvidia_gpus = GPUtil.getGPUs()
 
@@ -166,8 +166,14 @@ class GpuNvidia(sensors.Gpu):
             temperature = sum(temperature_all) / len(temperature_all)
         except:
             temperature = math.nan
+        
+        try:
+            fan_all = [item.fan for item in nvidia_gpus]
+            fan = (sum(fan_all) / len(fan_all)) * 100
+        except:
+            fan = math.nan
 
-        return load, memory_percentage, memory_used_mb, temperature
+        return load, memory_percentage, memory_used_mb, temperature, fan
 
     @staticmethod
     def fps() -> int:
@@ -184,7 +190,7 @@ class GpuNvidia(sensors.Gpu):
 
 class GpuAmd(sensors.Gpu):
     @staticmethod
-    def stats() -> Tuple[float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C)
+    def stats() -> Tuple[float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%)
         if pyamdgpuinfo:
             # Unlike other sensors, AMD GPU with pyamdgpuinfo pulls in all the stats at once
             i = 0
@@ -219,8 +225,14 @@ class GpuAmd(sensors.Gpu):
                 temperature = sum(temperature_all) / len(temperature_all)
             except:
                 temperature = math.nan
+            
+            try:
+                fan_all = [item.fan for item in amd_gpus]
+                fan = (sum(fan_all) / len(fan_all)) * 100
+            except:
+                fan = math.nan
 
-            return load, memory_percentage, memory_used, temperature
+            return load, memory_percentage, memory_used, temperature, fan
         elif pyadl:
             amd_gpus = pyadl.ADLManager.getInstance().getDevices()
 

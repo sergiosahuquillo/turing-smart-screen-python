@@ -237,7 +237,7 @@ class CPU:
         )
 
 
-def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps):
+def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps, fan_percentage):
     theme_gpu_data = config.THEME_DATA['STATS']['GPU']
 
     gpu_percent_graph_data = theme_gpu_data['PERCENTAGE']['GRAPH']
@@ -259,6 +259,17 @@ def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps)
             logger.warning("Your GPU memory relative usage (%) is not supported yet")
             gpu_mem_graph_data['SHOW'] = False
             gpu_mem_radial_data['SHOW'] = False
+    
+    gpu_fan_graph_data = theme_gpu_data['FAN']['GRAPH']
+    gpu_fan_radial_data = theme_gpu_data['FAN']['RADIAL']
+    gpu_fan_text_data = theme_gpu_data['FAN']['TEXT']
+    if math.isnan(fan_percentage):
+        fan_percentage = 0
+        if gpu_fan_graph_data['SHOW'] or gpu_fan_radial_data['SHOW'] or gpu_fan_text_data['SHOW']:
+            logger.warning("Your GPU fan relative usage (%) is not supported yet")
+            gpu_fan_graph_data['SHOW'] = False
+            gpu_fan_radial_data['SHOW'] = False
+            gpu_fan_text_data['SHOW'] = False
 
     gpu_mem_text_data = theme_gpu_data['MEMORY']['TEXT']
     if math.isnan(memory_used_mb):
@@ -298,6 +309,15 @@ def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps)
         unit="%"
     )
 
+    display_themed_progress_bar(gpu_fan_graph_data, fan_percentage)
+
+    display_themed_radial_bar(
+        theme_data=gpu_fan_radial_data,
+        value=int(fan_percentage),
+        min_size=3,
+        unit="%"
+    )
+
     display_themed_value(
         theme_data=gpu_percent_text_data,
         value=int(load),
@@ -326,13 +346,20 @@ def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps)
         unit=" FPS"
     )
 
+    display_themed_value(
+        theme_data=gpu_fan_text_data,
+        value=int(fan_percentage),
+        min_size=3,
+        unit="%"
+    )
+
 
 class Gpu:
     @staticmethod
     def stats():
-        load, memory_percentage, memory_used_mb, temperature = sensors.Gpu.stats()
+        load, memory_percentage, memory_used_mb, temperature, fan_percentage = sensors.Gpu.stats()
         fps = sensors.Gpu.fps()
-        display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps)
+        display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps, fan_percentage)
 
     @staticmethod
     def is_available():
