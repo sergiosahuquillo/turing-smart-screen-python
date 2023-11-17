@@ -18,6 +18,8 @@ STATS:
       INTERVAL: 5
       TEXT:
         SHOW: False
+      GRAPH:
+        SHOW: False
     LOAD:
       INTERVAL: 5
       ONE:

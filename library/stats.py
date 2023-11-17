@@ -220,6 +220,11 @@ class CPU:
             min_size=4
         )
 
+        display_themed_progress_bar_float(
+            theme_data=config.THEME_DATA['STATS']['CPU']['VOLTAGE']['GRAPH'],
+            value=float(f'{sensors.Cpu.voltage():.2f}')
+        )
+
     @staticmethod
     def load():
         cpu_load = sensors.Cpu.load()
