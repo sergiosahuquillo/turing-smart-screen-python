@@ -110,7 +110,7 @@ def CPULoad():
     stats.CPU.load()
 
 
-@async_job("CPU_Load")
+@async_job("CPU_Temperature")
 @schedule(timedelta(seconds=config.THEME_DATA['STATS']['CPU']['TEMPERATURE'].get("INTERVAL", None)).total_seconds())
 def CPUTemperature():
     """ Refresh the CPU Temperature """
