@@ -265,7 +265,7 @@ class CPU:
         )
 
 
-def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps, fan_percentage):
+def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps, fan_percentage, clock_freq):
     theme_gpu_data = config.THEME_DATA['STATS']['GPU']
 
     gpu_percent_graph_data = theme_gpu_data['PERCENTAGE']['GRAPH']
@@ -298,6 +298,17 @@ def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps,
             gpu_fan_graph_data['SHOW'] = False
             gpu_fan_radial_data['SHOW'] = False
             gpu_fan_text_data['SHOW'] = False
+    
+    gpu_clock_freq_graph_data = theme_gpu_data['CLOCK_FREQ']['GRAPH']
+    gpu_clock_freq_radial_data = theme_gpu_data['CLOCK_FREQ']['RADIAL']
+    gpu_clock_freq_text_data = theme_gpu_data['CLOCK_FREQ']['TEXT']
+    if math.isnan(clock_freq):
+        clock_freq = 0.0
+        if gpu_clock_freq_graph_data['SHOW'] or gpu_clock_freq_radial_data['SHOW'] or gpu_clock_freq_text_data['SHOW']:
+            logger.warning("Your GPU clock frequency is not supported yet")
+            gpu_clock_freq_graph_data['SHOW'] = False
+            gpu_clock_freq_radial_data['SHOW'] = False
+            gpu_clock_freq_text_data['SHOW'] = False
 
     gpu_mem_text_data = theme_gpu_data['MEMORY']['TEXT']
     if math.isnan(memory_used_mb):
@@ -381,13 +392,22 @@ def display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps,
         unit="%"
     )
 
+    display_themed_progress_bar_float(gpu_clock_freq_graph_data, float(f'{clock_freq / 1000:.2f}'))
+
+    display_themed_value(
+        theme_data=gpu_clock_freq_text_data,
+        value=f'{clock_freq / 1000:.2f}',
+        min_size=3,
+        unit=" Ghz"
+    )
+
 
 class Gpu:
     @staticmethod
     def stats():
-        load, memory_percentage, memory_used_mb, temperature, fan_percentage = sensors.Gpu.stats()
+        load, memory_percentage, memory_used_mb, temperature, fan_percentage, clock_freq = sensors.Gpu.stats()
         fps = sensors.Gpu.fps()
-        display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps, fan_percentage)
+        display_gpu_stats(load, memory_percentage, memory_used_mb, temperature, fps, fan_percentage, clock_freq)
 
     @staticmethod
     def is_available():

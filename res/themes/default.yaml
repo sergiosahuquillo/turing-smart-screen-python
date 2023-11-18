@@ -69,6 +69,13 @@ STATS:
         SHOW: False
       TEXT:
         SHOW: False
+    CLOCK_FREQ:
+      GRAPH:
+        SHOW: False
+      RADIAL:
+        SHOW: False
+      TEXT:
+        SHOW: False
   MEMORY:
     INTERVAL: 5
     SWAP:

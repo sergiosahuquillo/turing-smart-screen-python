@@ -263,7 +263,7 @@ class Gpu(sensors.Gpu):
     prev_fps = 0
 
     @classmethod
-    def stats(cls) -> Tuple[float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%)
+    def stats(cls) -> Tuple[float, float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%) / clock_freq (Mhz)
         gpu_to_use = get_hw_and_update(Hardware.HardwareType.GpuAmd, cls.gpu_name)
         if gpu_to_use is None:
             gpu_to_use = get_hw_and_update(Hardware.HardwareType.GpuNvidia, cls.gpu_name)
@@ -271,13 +271,14 @@ class Gpu(sensors.Gpu):
             gpu_to_use = get_hw_and_update(Hardware.HardwareType.GpuIntel, cls.gpu_name)
         if gpu_to_use is None:
             # GPU not supported
-            return math.nan, math.nan, math.nan, math.nan, math.nan
+            return math.nan, math.nan, math.nan, math.nan, math.nan, math.nan
 
         load = math.nan
         used_mem = math.nan
         total_mem = math.nan
         temp = math.nan
         fan = []
+        clock_freq = math.nan
 
         for sensor in gpu_to_use.Sensors:
             if sensor.SensorType == Hardware.SensorType.Load and str(sensor.Name).startswith("GPU Core"):
@@ -299,8 +300,10 @@ class Gpu(sensors.Gpu):
                 fan.append(float(sensor.Value))
             elif sensor.SensorType == Hardware.SensorType.Control and str(sensor.Name).startswith("GPU Fan 3"):
                 fan.append(float(sensor.Value))
+            elif sensor.SensorType == Hardware.SensorType.Clock and str(sensor.Name).startswith("GPU Core"):
+                clock_freq = float(sensor.Value)
 
-        return load, (used_mem / total_mem * 100.0), used_mem, temp, mean(fan)
+        return load, (used_mem / total_mem * 100.0), used_mem, temp, mean(fan), clock_freq
 
     @classmethod
     def fps(cls) -> int:

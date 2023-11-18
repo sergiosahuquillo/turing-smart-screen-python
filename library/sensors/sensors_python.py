@@ -103,14 +103,14 @@ class Cpu(sensors.Cpu):
 
 class Gpu(sensors.Gpu):
     @staticmethod
-    def stats() -> Tuple[float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C)
+    def stats() -> Tuple[float, float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%) / clock_freq (Mhz)
         global DETECTED_GPU
         if DETECTED_GPU == GpuType.AMD:
             return GpuAmd.stats()
         elif DETECTED_GPU == GpuType.NVIDIA:
             return GpuNvidia.stats()
         else:
-            return math.nan, math.nan, math.nan, math.nan
+            return math.nan, math.nan, math.nan, math.nan, math.nan, math.nan
 
     @staticmethod
     def fps() -> int:
@@ -138,7 +138,7 @@ class Gpu(sensors.Gpu):
 
 class GpuNvidia(sensors.Gpu):
     @staticmethod
-    def stats() -> Tuple[float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%)
+    def stats() -> Tuple[float, float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%) / clock_freq (Mhz)
         # Unlike other sensors, Nvidia GPU with GPUtil pulls in all the stats at once
         nvidia_gpus = GPUtil.getGPUs()
 
@@ -172,8 +172,14 @@ class GpuNvidia(sensors.Gpu):
             fan = (sum(fan_all) / len(fan_all)) * 100
         except:
             fan = math.nan
+        
+        try:
+            clock_freq_all = [item.clock_freq for item in nvidia_gpus]
+            clock_freq = (sum(clock_freq_all) / len(clock_freq_all)) * 100
+        except:
+            clock_freq = math.nan
 
-        return load, memory_percentage, memory_used_mb, temperature, fan
+        return load, memory_percentage, memory_used_mb, temperature, fan, clock_freq
 
     @staticmethod
     def fps() -> int:
@@ -190,7 +196,7 @@ class GpuNvidia(sensors.Gpu):
 
 class GpuAmd(sensors.Gpu):
     @staticmethod
-    def stats() -> Tuple[float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%)
+    def stats() -> Tuple[float, float, float, float, float, float]:  # load (%) / used mem (%) / used mem (Mb) / temp (°C) / fan (%) / clock_freq (Mhz)
         if pyamdgpuinfo:
             # Unlike other sensors, AMD GPU with pyamdgpuinfo pulls in all the stats at once
             i = 0
@@ -231,8 +237,14 @@ class GpuAmd(sensors.Gpu):
                 fan = (sum(fan_all) / len(fan_all)) * 100
             except:
                 fan = math.nan
+            
+            try:
+                clock_freq_all = [item.clock_freq for item in amd_gpus]
+                clock_freq = (sum(clock_freq_all) / len(clock_freq_all)) * 100
+            except:
+                clock_freq = math.nan
 
-            return load, memory_percentage, memory_used, temperature, fan
+            return load, memory_percentage, memory_used, temperature, fan, clock_freq
         elif pyadl:
             amd_gpus = pyadl.ADLManager.getInstance().getDevices()
 
