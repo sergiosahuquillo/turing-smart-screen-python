@@ -14,6 +14,8 @@ STATS:
       INTERVAL: 5
       TEXT:
         SHOW: False
+      GRAPH:
+        SHOW: False
     VOLTAGE:
       INTERVAL: 5
       TEXT:
