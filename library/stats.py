@@ -446,22 +446,22 @@ class Memory:
 
         display_themed_value(
             theme_data=memory_stats_theme_data['VIRTUAL']['USED'],
-            value=f'{sensors.Memory.virtual_used() / 1000000000:04.1f}',
-            min_size=3,
+            value=f'{sensors.Memory.virtual_used() / 1000000000:.2f}',
+            min_size=5,
             unit=" GB"
         )
 
         display_themed_value(
             theme_data=memory_stats_theme_data['VIRTUAL']['FREE'],
-            value=f'{sensors.Memory.virtual_free() / 1000000000:04.1f}',
-            min_size=3,
+            value=f'{sensors.Memory.virtual_free() / 1000000000:.2f}',
+            min_size=5,
             unit=" GB"
         )
 
         display_themed_value(
             theme_data=memory_stats_theme_data['VIRTUAL']['TOTAL'],
-            value=f'{((sensors.Memory.virtual_free() + sensors.Memory.virtual_used()) / 1000000000):04.1f}',
-            min_size=3,
+            value=f'{((sensors.Memory.virtual_free() + sensors.Memory.virtual_used()) / 1000000000):.2f}',
+            min_size=5,
             unit=" GB"
         )
 
